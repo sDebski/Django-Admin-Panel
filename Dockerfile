@@ -10,7 +10,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
-    lib6c-dev \
+    libc6-dev \
     && rm -rf /var/lib/apt/lists/*
 
 
