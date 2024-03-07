@@ -1,0 +1,16 @@
+[
+    {
+        "model": "core.label",
+        "pk": 1,
+        "fields": {
+            "name": "Label 1"
+        }
+    },
+    {
+        "model": "core.label",
+        "pk": 2,
+        "fields": {
+            "name": "Label 2"
+        }
+    }
+]
