@@ -2,7 +2,6 @@ services:
   django:
     build:
       context: .
-    command: /bin/sh -c "./entrypoint.sh"
     ports: 
       - 8000:8000
     volumes: 

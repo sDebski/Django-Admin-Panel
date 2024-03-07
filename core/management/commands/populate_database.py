@@ -7,7 +7,7 @@ User = get_user_model()
 class Command(BaseCommand):
     help = "This is a command populating database and creating admin user"
 
-    def create_admin_user():
+    def create_admin_user(self):
         if not User.objects.filter(username="admin").exists():
             User.objects.create_superuser(username="admin", password="admin")
 
