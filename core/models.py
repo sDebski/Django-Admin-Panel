@@ -1,9 +1,9 @@
 # Create your models here.
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
-class User(AbstractUser):
+class Worker(models.Model):
     email = models.EmailField(unique=True)
+    username = models.CharField(max_length=100)
 
     def __str__(self):
         return self.username
@@ -41,7 +41,7 @@ class Task(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Nowe')
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE)
+    assigned_to = models.ForeignKey(Worker, on_delete=models.CASCADE)
     labels = models.ManyToManyField(Label)
 
     def __str__(self):
