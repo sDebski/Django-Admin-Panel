@@ -59,6 +59,20 @@ class ProjectAdmin(admin.ModelAdmin):
         ("Others", {"fields": ("category",)}),
     )
 
+    def save_formset(self, request, form, formset, change):
+        tasks_data = formset.cleaned_data
+
+        print("CLEANED DATA:", tasks_data)
+        print("Row", tasks_data[0])
+        for task_data in tasks_data:
+            task_data = task_data["id"]
+            task_data.description += ' *Parent project has been updated!* '
+            task_data.save()
+
+        self.message_user(request, "Task`s descriptions have been updated", messages.INFO)
+
+        return super().save_formset(request, form, formset, change)  # just does formset.save()
+
 
 @admin.register(models.ProjectCategory)
 class ProjectCategoryAdmin(admin.ModelAdmin):
@@ -90,6 +104,15 @@ class TaskAdmin(admin.ModelAdmin):
 
     actions = ("add_comment", "clean_comments", "finished_status")
 
+    def save_model(self, request, obj, form, change):
+        if change:
+            obj.title += " UPDATED |"
+
+            messages.set_level(request, messages.WARNING)
+            self.message_user(request, f"Task has been updated - changed title via hook.", messages.WARNING)
+
+        return super().save_model(request, obj, form, change)
+    
     @admin.action(description="Add dummy comment")
     def add_comment(self, request, queryset):
         if not queryset:
@@ -139,3 +162,9 @@ class TaskAdmin(admin.ModelAdmin):
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("task",)
+
+    def delete_model(self, request, obj):
+        messages.set_level(request, messages.WARNING)
+        self.message_user(request, "The comment has been delated - SAD FOR COMMUNICATION", messages.WARNING)
+
+        return super().delete_model(request, obj)  # just does obj.delete()
