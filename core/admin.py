@@ -2,7 +2,7 @@ from typing import Any
 from django.contrib import admin
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
-from core import models
+from core import models, inlines
 from django.db.models import Count
 
 
@@ -32,6 +32,7 @@ class ProjectAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     list_per_page = 5
     list_filter = ("category",)
+    inlines = (inlines.TaskInline,)
 
     def tasks(self, obj):
         return obj.task_set.count()
@@ -41,6 +42,14 @@ class ProjectAdmin(admin.ModelAdmin):
         return queryset.annotate(tasks_count=Count("task"))
 
     tasks.order_admin_field = "tasks_count"
+
+    def get_readonly_fields(self, request, obj):
+        return ("name",) if obj else tuple()
+    
+    fieldsets = (
+        ("General", {"fields": ("name", "description",)}),
+        ("Others", {"fields": ("category",)}),
+    )
 
 
 @admin.register(models.ProjectCategory)
@@ -61,13 +70,17 @@ class TaskAdmin(admin.ModelAdmin):
 
     def comments(self, obj):
         return obj.comment_set.count()
-    
+
+    inlines = (inlines.CommentInline,)
     list_per_page = 5
     list_filter = ("labels",)
+
+    fieldsets = (
+        ("General", {"fields": ("title", "description", "status")}),
+        ("Assigns", {"fields": ("project", "assigned_to")}),
+    )
 
 
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("task",)
-
-    
