@@ -1,14 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
-from django.conf import settings
 from core import models
 
 
 User = get_user_model()
-import os
-
-files = os.listdir(os.path.join(settings.BASE_DIR, "core", "fixtures"))
 
 class Command(BaseCommand):
     help = "This is a command populating database and creating admin user"
