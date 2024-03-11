@@ -51,8 +51,6 @@ class CompanyAdminSite(admin.AdminSite):
                 admin_url = None
                 add_url = None
                 has_model_perms = {}
-            print("PERMS:", f"view_{node.get('model_name')}")
-            print("USER", request.user.__dict__)
             if request.user.has_perms(f"view_{node.get('model_name')}"):
                 app_list.append(
                     {

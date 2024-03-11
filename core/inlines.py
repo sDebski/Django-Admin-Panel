@@ -20,5 +20,5 @@ class TaskInline(admin.StackedInline):
     readonly_fields = fields
     can_delete = False
     ordering = ("status",)
-
+    extra = 0
     max_num = 10

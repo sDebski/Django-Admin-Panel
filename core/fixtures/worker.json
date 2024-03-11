@@ -1,18 +1,18 @@
 [
     {
-        "model": "core.worker",
-        "pk": 1,
-        "fields": {
-            "username": "worker1",
-            "email": "worker1@example.com"
-        }
+      "model": "core.worker",
+      "pk": 1,
+      "fields": {
+        "email": "jan.kowalski@example.com",
+        "username": "Jan Kowalski"
+      }
     },
     {
-        "model": "core.worker",
-        "pk": 2,
-        "fields": {
-            "username": "worker2",
-            "email": "worker2@example.com"
-        }
+      "model": "core.worker",
+      "pk": 2,
+      "fields": {
+        "email": "anna.nowak@example.com",
+        "username": "Anna Nowak"
+      }
     }
-]
+  ]

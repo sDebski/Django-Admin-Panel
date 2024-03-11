@@ -1,16 +1,16 @@
 [
     {
-        "model": "core.projectcategory",
-        "pk": 1,
-        "fields": {
-            "name": "Category 1"
-        }
+      "model": "core.projectcategory",
+      "pk": 1,
+      "fields": {
+        "name": "Zarządzanie dokumentacją"
+      }
     },
     {
-        "model": "core.projectcategory",
-        "pk": 2,
-        "fields": {
-            "name": "Category 2"
-        }
+      "model": "core.projectcategory",
+      "pk": 2,
+      "fields": {
+        "name": "Planowanie projektów"
+      }
     }
-]
+  ]

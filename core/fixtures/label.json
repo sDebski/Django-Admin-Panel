@@ -1,16 +1,30 @@
 [
     {
-        "model": "core.label",
-        "pk": 1,
-        "fields": {
-            "name": "Label 1"
-        }
+      "model": "core.label",
+      "pk": 1,
+      "fields": {
+        "name": "Opracowane"
+      }
     },
     {
-        "model": "core.label",
-        "pk": 2,
-        "fields": {
-            "name": "Label 2"
-        }
+      "model": "core.label",
+      "pk": 2,
+      "fields": {
+        "name": "Do dalszej analizy"
+      }
+    },
+    {
+      "model": "core.label",
+      "pk": 3,
+      "fields": {
+        "name": "Grupowe"
+      }
+    },
+    {
+      "model": "core.label",
+      "pk": 4,
+      "fields": {
+        "name": "Pojedyncze"
+      }
     }
-]
+  ]

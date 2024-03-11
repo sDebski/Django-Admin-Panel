@@ -1,5 +1,5 @@
 from typing import Any
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from core import models, inlines
@@ -45,9 +45,17 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj):
         return ("name",) if obj else tuple()
-    
+
     fieldsets = (
-        ("General", {"fields": ("name", "description",)}),
+        (
+            "General",
+            {
+                "fields": (
+                    "name",
+                    "description",
+                )
+            },
+        ),
         ("Others", {"fields": ("category",)}),
     )
 
@@ -80,6 +88,53 @@ class TaskAdmin(admin.ModelAdmin):
         ("Assigns", {"fields": ("project", "assigned_to")}),
     )
 
+    actions = ("add_comment", "clean_comments", "finished_status")
+
+    @admin.action(description="Add dummy comment")
+    def add_comment(self, request, queryset):
+        if not queryset:
+            self.message_user(request, "No tasks has been chosen.", messages.ERROR)
+            return
+        
+        for task in queryset:
+            models.Comment.objects.create(content="Dummy comment", task=task)
+
+        self.message_user(
+            request,
+            f"Comments were added to {queryset.count()} tasks.",
+            messages.SUCCESS,
+        )
+
+    @admin.action(description="Clean comments")
+    def clean_comments(self, request, queryset):
+        self._handle_empty_queryset(request, queryset)
+        
+        queryset = queryset.prefetch_related('comment_set')
+        for task in queryset:
+            task.comment_set.all().delete()
+
+        self.message_user(
+            request,
+            f"Comments were added to {queryset.count()} tasks.",
+            messages.SUCCESS,
+        )
+
+    @admin.action(description="Set finished status")
+    def finished_status(self, request, queryset):
+        self._handle_empty_queryset(request, queryset)
+
+        queryset.update(status="Zakończone")
+
+        self.message_user(
+            request,
+            f"Status 'Finished' was added to {queryset.count()} tasks.",
+            messages.SUCCESS,
+        )
+
+    def _handle_empty_queryset(self, request, queryset):
+        if not queryset:
+            self.message_user(request, "No tasks has been chosen.", messages.ERROR)
+            return
 
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
