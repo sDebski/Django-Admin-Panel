@@ -10,7 +10,7 @@ NAV_MENU_ORDER = [
                 "menu_name": "Workers",
                 "models": [],
             },
-        ]
+        ],
     },
     {
         "app_name": "",
@@ -52,6 +52,19 @@ NAV_MENU_ORDER = [
                 "app_name": "core",
                 "model_name": "label",
                 "menu_name": "Labels",
+                "models": [],
+            },
+        ],
+    },
+    {
+        "app_name": "",
+        "model_name": "",
+        "menu_name": "Interface settings",
+        "models": [
+            {
+                "app_name": "admin_interface",
+                "model_name": "theme",
+                "menu_name": "Themes",
                 "models": [],
             },
         ],

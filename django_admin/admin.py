@@ -27,10 +27,24 @@ class CompanyAdminSite(admin.AdminSite):
 
         request.current_app = self.name
 
-        return TemplateResponse(request, self.index_template or "admin/index.html", context)
+        return TemplateResponse(
+            request, self.index_template or "admin/index.html", context
+        )
 
     def get_app_list(self, request):
-        return self.get_custom_app_list(NAV_MENU_ORDER, self._registry, request)
+        know_how = {
+            "name": "Know how",
+            "models": [
+                {
+                    "name": "Documentation",
+                    "admin_url": "/admin/doc/",
+                    "view_only": True,
+                },
+            ],
+        }
+        return [know_how] + self.get_custom_app_list(
+            NAV_MENU_ORDER, self._registry, request
+        )
 
     def get_custom_app_list(self, nodes, registry, request, app_list=None):
         if app_list is None:
@@ -38,7 +52,9 @@ class CompanyAdminSite(admin.AdminSite):
 
         for node in nodes:
             try:
-                node_model = apps.get_model(node.get("app_name"), node.get("model_name"))
+                node_model = apps.get_model(
+                    node.get("app_name"), node.get("model_name")
+                )
                 has_model_perms = registry[node_model].get_model_perms(request)
                 admin_url = reverse(
                     f"admin:{node_model._meta.app_label}_{node_model._meta.model_name}_changelist"
@@ -62,7 +78,9 @@ class CompanyAdminSite(admin.AdminSite):
                         "has_module_perms": has_model_perms.get("view"),
                         "perms": has_model_perms,
                         "view_only": False,
-                        "models": self.get_custom_app_list(node["models"], registry, request),
+                        "models": self.get_custom_app_list(
+                            node["models"], registry, request
+                        ),
                     }
                 )
 

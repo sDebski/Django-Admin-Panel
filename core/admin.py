@@ -2,15 +2,18 @@ from typing import Any
 from django.contrib import admin, messages
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
-from core import models, inlines
+
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 from django.conf import settings
 
+from import_export.admin import ImportExportModelAdmin
+
+from core import models, inlines
 
 @admin.register(models.Worker)
-class WorkerAdmin(admin.ModelAdmin):
+class WorkerAdmin(ImportExportModelAdmin):
     list_display = (
         "email",
         "username",
@@ -20,12 +23,12 @@ class WorkerAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Label)
-class LabelAdmin(admin.ModelAdmin):
+class LabelAdmin(ImportExportModelAdmin):
     list_display = ("name",)
 
 
 @admin.register(models.Project)
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(ImportExportModelAdmin):
     list_display = (
         "name",
         "description",
@@ -94,12 +97,12 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.ProjectCategory)
-class ProjectCategoryAdmin(admin.ModelAdmin):
+class ProjectCategoryAdmin(ImportExportModelAdmin):
     list_display = ("name",)
 
 
 @admin.register(models.Task)
-class TaskAdmin(admin.ModelAdmin):
+class TaskAdmin(ImportExportModelAdmin):
     list_display = (
         "title",
         "description",
@@ -200,7 +203,7 @@ class TaskAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Comment)
-class CommentAdmin(admin.ModelAdmin):
+class CommentAdmin(ImportExportModelAdmin):
     list_display = ("content", "commented_on")
 
     def delete_model(self, request, obj):
