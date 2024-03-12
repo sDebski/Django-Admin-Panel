@@ -74,7 +74,6 @@ class ProjectAdmin(admin.ModelAdmin):
         """
         return format_html(icon_html)
 
-
     def save_formset(self, request, form, formset, change):
         tasks_data = formset.cleaned_data
 
@@ -82,12 +81,16 @@ class ProjectAdmin(admin.ModelAdmin):
         print("Row", tasks_data[0])
         for task_data in tasks_data:
             task_data = task_data["id"]
-            task_data.description += ' *Parent project has been updated!* '
+            task_data.description += " *Parent project has been updated!* "
             task_data.save()
 
-        self.message_user(request, "Task`s descriptions have been updated", messages.INFO)
+        self.message_user(
+            request, "Task`s descriptions have been updated", messages.INFO
+        )
 
-        return super().save_formset(request, form, formset, change)  # just does formset.save()
+        return super().save_formset(
+            request, form, formset, change
+        )
 
 
 @admin.register(models.ProjectCategory)
@@ -126,10 +129,14 @@ class TaskAdmin(admin.ModelAdmin):
             obj.title += " UPDATED |"
 
             messages.set_level(request, messages.WARNING)
-            self.message_user(request, f"Task has been updated - changed title via hook.", messages.WARNING)
+            self.message_user(
+                request,
+                f"Task has been updated - changed title via hook.",
+                messages.WARNING,
+            )
 
         return super().save_model(request, obj, form, change)
-    
+
     def in_project(self, obj):
         style = f"""
             width: 64px;
@@ -138,18 +145,19 @@ class TaskAdmin(admin.ModelAdmin):
         """
         icon_html = f"""
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-            <img src="{settings.MEDIA_URL}{obj.project.icon.name}" style="{style}" />
-            <a href="{reverse('admin:core_project_change', kwargs={"object_id": obj.project.pk})}">{obj.project}</a>
+            <a href="{reverse('admin:core_project_change', kwargs={"object_id": obj.project.pk})}">
+                <img src="{settings.MEDIA_URL}{obj.project.icon.name}" style="{style}" />
+            </a>
         </div>
         """
         return format_html(icon_html)
-    
+
     @admin.action(description="Add dummy comment")
     def add_comment(self, request, queryset):
         if not queryset:
             self.message_user(request, "No tasks has been chosen.", messages.ERROR)
             return
-        
+
         for task in queryset:
             models.Comment.objects.create(content="Dummy comment", task=task)
 
@@ -162,8 +170,8 @@ class TaskAdmin(admin.ModelAdmin):
     @admin.action(description="Clean comments")
     def clean_comments(self, request, queryset):
         self._handle_empty_queryset(request, queryset)
-        
-        queryset = queryset.prefetch_related('comment_set')
+
+        queryset = queryset.prefetch_related("comment_set")
         for task in queryset:
             task.comment_set.all().delete()
 
@@ -190,13 +198,18 @@ class TaskAdmin(admin.ModelAdmin):
             self.message_user(request, "No tasks has been chosen.", messages.ERROR)
             return
 
+
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("task", "commented_on")
+    list_display = ("content", "commented_on")
 
     def delete_model(self, request, obj):
         messages.set_level(request, messages.WARNING)
-        self.message_user(request, "The comment has been delated - SAD FOR COMMUNICATION", messages.WARNING)
+        self.message_user(
+            request,
+            "The comment has been delated - SAD FOR COMMUNICATION",
+            messages.WARNING,
+        )
 
         return super().delete_model(request, obj)  # just does obj.delete()
 
