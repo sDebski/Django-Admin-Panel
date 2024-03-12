@@ -4,6 +4,9 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from core import models, inlines
 from django.db.models import Count
+from django.urls import reverse
+from django.utils.html import format_html
+from django.conf import settings
 
 
 @admin.register(models.Worker)
@@ -28,6 +31,7 @@ class ProjectAdmin(admin.ModelAdmin):
         "description",
         "category",
         "tasks",
+        "icon_",
     )
     search_fields = ("name",)
     list_per_page = 5
@@ -44,7 +48,7 @@ class ProjectAdmin(admin.ModelAdmin):
     tasks.order_admin_field = "tasks_count"
 
     def get_readonly_fields(self, request, obj):
-        return ("name",) if obj else tuple()
+        return ("name", "icon_") if obj else tuple()
 
     fieldsets = (
         (
@@ -58,6 +62,18 @@ class ProjectAdmin(admin.ModelAdmin):
         ),
         ("Others", {"fields": ("category",)}),
     )
+
+    def icon_(self, obj):
+        style = f"""
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+        """
+        icon_html = f"""
+            <img src="{settings.MEDIA_URL}{obj.icon.name}" style="{style}" />
+        """
+        return format_html(icon_html)
+
 
     def save_formset(self, request, form, formset, change):
         tasks_data = formset.cleaned_data
@@ -88,6 +104,7 @@ class TaskAdmin(admin.ModelAdmin):
         "project",
         "assigned_to",
         "comments",
+        "in_project",
     )
 
     def comments(self, obj):
@@ -112,6 +129,20 @@ class TaskAdmin(admin.ModelAdmin):
             self.message_user(request, f"Task has been updated - changed title via hook.", messages.WARNING)
 
         return super().save_model(request, obj, form, change)
+    
+    def in_project(self, obj):
+        style = f"""
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+        """
+        icon_html = f"""
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <img src="{settings.MEDIA_URL}{obj.project.icon.name}" style="{style}" />
+            <a href="{reverse('admin:core_project_change', kwargs={"object_id": obj.project.pk})}">{obj.project}</a>
+        </div>
+        """
+        return format_html(icon_html)
     
     @admin.action(description="Add dummy comment")
     def add_comment(self, request, queryset):
@@ -161,10 +192,16 @@ class TaskAdmin(admin.ModelAdmin):
 
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("task",)
+    list_display = ("task", "commented_on")
 
     def delete_model(self, request, obj):
         messages.set_level(request, messages.WARNING)
         self.message_user(request, "The comment has been delated - SAD FOR COMMUNICATION", messages.WARNING)
 
         return super().delete_model(request, obj)  # just does obj.delete()
+
+    def commented_on(self, obj):
+        a_html = f"""
+            <a href="{reverse('admin:core_task_change', kwargs={"object_id": obj.task.pk})}">{obj.task}</a>
+        """
+        return format_html(a_html)

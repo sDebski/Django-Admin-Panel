@@ -25,6 +25,7 @@ class Project(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(ProjectCategory, on_delete=models.CASCADE)
+    icon = models.ImageField(upload_to="projects/", null=True)
 
     def __str__(self):
         return self.name
