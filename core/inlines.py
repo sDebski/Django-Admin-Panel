@@ -2,7 +2,7 @@ from core import models
 from django.contrib import admin
 
 
-class CommentInline(admin.TabularInline):
+class CommentInline(admin.StackedInline):
     model = models.Comment
     fields = ("content", "task")
     readonly_fields = ("task",)
@@ -10,7 +10,7 @@ class CommentInline(admin.TabularInline):
     max_num = 5
 
 
-class TaskInline(admin.StackedInline):
+class TaskInline(admin.TabularInline):
     model = models.Task
     fields = (
         "title",
