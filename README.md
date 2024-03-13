@@ -10,6 +10,7 @@
 - PostgreSQL 16.2
 
 ### Packages used in Admin Panel:
+
 - docutils 0.20.1
 - django-import-export 3.3.6
 - django-admin-interface 0.26.1
