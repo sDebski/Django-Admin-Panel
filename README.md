@@ -1,4 +1,4 @@
-# Admin Panel Django
+# Django Admin Panel
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/sDebski/AdminPanelDjango)
 ![GitHub last commit](https://img.shields.io/github/last-commit/sDebski/AdminPanelDjango?color=yellow)
